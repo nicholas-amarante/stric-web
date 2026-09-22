@@ -50,14 +50,14 @@ export const CandidateRanking: React.FC<CandidateRankingProps> = ({
           onClick={() => setFilterScore('ALL')}
           className={`p-3.5 rounded-2xl border text-left transition-all ${
             filterScore === 'ALL'
-              ? 'bg-brand-500/15 border-brand-500/50 shadow-glow'
-              : 'glass-panel hover:bg-slate-900 border-slate-800'
+              ? 'bg-brand-500/15 border-brand-500/50 shadow-sm dark:shadow-glow'
+              : 'glass-panel hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800'
           }`}
         >
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
             Total Triados
           </span>
-          <span className="text-2xl font-extrabold text-white mt-1 block">{total}</span>
+          <span className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1 block">{total}</span>
         </button>
 
         {/* Alta Aderência (>=70%) */}
@@ -65,14 +65,14 @@ export const CandidateRanking: React.FC<CandidateRankingProps> = ({
           onClick={() => setFilterScore('HIGH')}
           className={`p-3.5 rounded-2xl border text-left transition-all ${
             filterScore === 'HIGH'
-              ? 'bg-emerald-500/20 border-emerald-500/50 shadow-glow-emerald'
-              : 'glass-panel hover:bg-slate-900 border-slate-800'
+              ? 'bg-emerald-500/15 dark:bg-emerald-500/20 border-emerald-500/50 shadow-sm dark:shadow-glow-emerald'
+              : 'glass-panel hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800'
           }`}
         >
-          <span className="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider block">
+          <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
             ≥ 70% Alta
           </span>
-          <span className="text-2xl font-extrabold text-emerald-300 mt-1 block">{highCount}</span>
+          <span className="text-2xl font-extrabold text-emerald-700 dark:text-emerald-300 mt-1 block">{highCount}</span>
         </button>
 
         {/* Média Aderência (50-69%) */}
@@ -80,14 +80,14 @@ export const CandidateRanking: React.FC<CandidateRankingProps> = ({
           onClick={() => setFilterScore('MEDIUM')}
           className={`p-3.5 rounded-2xl border text-left transition-all ${
             filterScore === 'MEDIUM'
-              ? 'bg-amber-500/20 border-amber-500/50 shadow-glow-amber'
-              : 'glass-panel hover:bg-slate-900 border-slate-800'
+              ? 'bg-amber-500/15 dark:bg-amber-500/20 border-amber-500/50 shadow-sm dark:shadow-glow-amber'
+              : 'glass-panel hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800'
           }`}
         >
-          <span className="text-[11px] font-semibold text-amber-400 uppercase tracking-wider block">
+          <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">
             50-69% Média
           </span>
-          <span className="text-2xl font-extrabold text-amber-300 mt-1 block">{mediumCount}</span>
+          <span className="text-2xl font-extrabold text-amber-700 dark:text-amber-300 mt-1 block">{mediumCount}</span>
         </button>
 
         {/* Baixa Aderência (<50%) */}
@@ -95,14 +95,14 @@ export const CandidateRanking: React.FC<CandidateRankingProps> = ({
           onClick={() => setFilterScore('LOW')}
           className={`p-3.5 rounded-2xl border text-left transition-all ${
             filterScore === 'LOW'
-              ? 'bg-rose-500/20 border-rose-500/50 shadow-glow-rose'
-              : 'glass-panel hover:bg-slate-900 border-slate-800'
+              ? 'bg-rose-500/15 dark:bg-rose-500/20 border-rose-500/50 shadow-sm dark:shadow-glow-rose'
+              : 'glass-panel hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800'
           }`}
         >
-          <span className="text-[11px] font-semibold text-rose-400 uppercase tracking-wider block">
+          <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 uppercase tracking-wider block">
             &lt; 50% Baixa
           </span>
-          <span className="text-2xl font-extrabold text-rose-300 mt-1 block">{lowCount}</span>
+          <span className="text-2xl font-extrabold text-rose-700 dark:text-rose-300 mt-1 block">{lowCount}</span>
         </button>
 
         {/* Selecionados para Entrevista */}
@@ -110,30 +110,30 @@ export const CandidateRanking: React.FC<CandidateRankingProps> = ({
           onClick={() => setFilterScore('INTERVIEW')}
           className={`col-span-2 sm:col-span-1 p-3.5 rounded-2xl border text-left transition-all ${
             filterScore === 'INTERVIEW'
-              ? 'bg-indigo-500/20 border-indigo-500/50 shadow-glow'
-              : 'glass-panel hover:bg-slate-900 border-slate-800'
+              ? 'bg-indigo-500/15 dark:bg-indigo-500/20 border-indigo-500/50 shadow-sm dark:shadow-glow'
+              : 'glass-panel hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800'
           }`}
         >
-          <span className="text-[11px] font-semibold text-indigo-300 uppercase tracking-wider block">
+          <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wider block">
             Entrevistas
           </span>
-          <span className="text-2xl font-extrabold text-indigo-200 mt-1 block">{interviewCount}</span>
+          <span className="text-2xl font-extrabold text-indigo-700 dark:text-indigo-200 mt-1 block">{interviewCount}</span>
         </button>
       </div>
 
       {/* Header do Ranking */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles size={18} className="text-brand-400" />
-          <h3 className="text-base font-bold text-white">
+          <Sparkles size={18} className="text-brand-600 dark:text-brand-400" />
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">
             Ranking de Compatibilidade por IA
           </h3>
-          <span className="text-xs text-slate-400 ml-1">
+          <span className="text-xs text-slate-500 dark:text-slate-400 ml-1">
             (Ordenado por maior score de aderência)
           </span>
         </div>
 
-        <div className="text-xs text-slate-400 flex items-center gap-1.5">
+        <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
           <Filter size={13} />
           <span>Exibindo: <strong>{filteredCandidaturas.length}</strong> de {total}</span>
         </div>
@@ -152,9 +152,9 @@ export const CandidateRanking: React.FC<CandidateRankingProps> = ({
         </div>
       ) : (
         <div className="glass-panel p-12 rounded-2xl text-center space-y-3">
-          <Users size={32} className="text-slate-500 mx-auto" />
-          <h4 className="text-base font-bold text-white">Nenhum candidato nesta faixa</h4>
-          <p className="text-xs text-slate-400">
+          <Users size={32} className="text-slate-400 dark:text-slate-500 mx-auto" />
+          <h4 className="text-base font-bold text-slate-900 dark:text-white">Nenhum candidato nesta faixa</h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             Não foram encontradas candidaturas para o filtro selecionado.
           </p>
         </div>

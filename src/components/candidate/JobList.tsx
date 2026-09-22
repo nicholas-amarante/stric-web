@@ -38,8 +38,8 @@ export const JobList: React.FC<JobListProps> = ({ vagas, isLoading }) => {
     <div className="space-y-8">
       {/* Toast Notification de Sucesso */}
       {successNotification && (
-        <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 shadow-xl backdrop-blur-md flex items-center gap-3 animate-fadeIn">
-          <CheckCircle2 size={20} className="text-emerald-400 shrink-0" />
+        <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 shadow-xl backdrop-blur-md flex items-center gap-3 animate-fadeIn">
+          <CheckCircle2 size={20} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
           <span className="text-xs sm:text-sm font-medium">{successNotification}</span>
         </div>
       )}
@@ -48,7 +48,7 @@ export const JobList: React.FC<JobListProps> = ({ vagas, isLoading }) => {
       <div className="glass-panel p-4 rounded-2xl flex flex-col md:flex-row gap-4 items-center justify-between">
         {/* Input de Busca */}
         <div className="relative w-full md:w-96">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             value={searchTerm}
@@ -60,14 +60,14 @@ export const JobList: React.FC<JobListProps> = ({ vagas, isLoading }) => {
 
         {/* Filtro de Experiência */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
             <Filter size={14} />
             <span>Experiência Máx.:</span>
           </div>
           <select
             value={experienceFilter}
             onChange={(e) => setExperienceFilter(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))}
-            className="glass-input text-xs py-2 pr-8 bg-slate-900"
+            className="glass-input text-xs py-2 pr-8 bg-white dark:bg-slate-900"
           >
             <option value="ALL">Todas as experiências</option>
             <option value={1}>Até 1 ano (Júnior)</option>
@@ -84,11 +84,11 @@ export const JobList: React.FC<JobListProps> = ({ vagas, isLoading }) => {
           {[1, 2, 3].map((n) => (
             <div key={n} className="glass-panel p-6 rounded-2xl h-80 animate-pulse flex flex-col justify-between">
               <div className="space-y-3">
-                <div className="h-6 bg-slate-800 rounded-md w-3/4"></div>
-                <div className="h-4 bg-slate-800/60 rounded-md w-1/2"></div>
-                <div className="h-16 bg-slate-800/40 rounded-md w-full mt-4"></div>
+                <div className="h-6 bg-slate-200 dark:bg-slate-800 rounded-md w-3/4"></div>
+                <div className="h-4 bg-slate-200/60 dark:bg-slate-800/60 rounded-md w-1/2"></div>
+                <div className="h-16 bg-slate-200/40 dark:bg-slate-800/40 rounded-md w-full mt-4"></div>
               </div>
-              <div className="h-10 bg-slate-800 rounded-xl w-full"></div>
+              <div className="h-10 bg-slate-200 dark:bg-slate-800 rounded-xl w-full"></div>
             </div>
           ))}
         </div>
@@ -104,12 +104,12 @@ export const JobList: React.FC<JobListProps> = ({ vagas, isLoading }) => {
         </div>
       ) : (
         <div className="glass-panel p-12 rounded-2xl text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-slate-900 flex items-center justify-center mx-auto text-slate-500 border border-slate-800">
+          <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center mx-auto text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-800 shadow-sm">
             <Briefcase size={32} />
           </div>
           <div>
-            <h4 className="text-base font-bold text-white">Nenhuma vaga encontrada</h4>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
+            <h4 className="text-base font-bold text-slate-900 dark:text-white">Nenhuma vaga encontrada</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
               Tente ajustar os termos de pesquisa ou remover os filtros de experiência selecionados.
             </p>
           </div>

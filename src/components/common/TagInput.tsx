@@ -42,18 +42,18 @@ export const TagInput: React.FC<TagInputProps> = ({
   };
 
   const chipColor = badgeVariant === 'primary' 
-    ? 'bg-brand-500/15 text-brand-300 border-brand-500/30'
-    : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
+    ? 'bg-brand-500/10 dark:bg-brand-500/15 text-brand-700 dark:text-brand-300 border-brand-500/30'
+    : 'bg-emerald-500/10 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30';
 
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
           {label}
         </label>
       )}
 
-      <div className="flex flex-wrap gap-2 p-2.5 bg-slate-950/60 border border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-brand-500/50 focus-within:border-brand-500 transition-all">
+      <div className="flex flex-wrap gap-2 p-2.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-xl focus-within:ring-2 focus-within:ring-brand-500/40 focus-within:border-brand-500 transition-all shadow-sm">
         {tags.map((tag) => (
           <span
             key={tag}
@@ -63,7 +63,7 @@ export const TagInput: React.FC<TagInputProps> = ({
             <button
               type="button"
               onClick={() => handleRemoveTag(tag)}
-              className="hover:text-white p-0.5 rounded transition-colors focus:outline-none"
+              className="hover:text-black dark:hover:text-white p-0.5 rounded transition-colors focus:outline-none"
               title="Remover tag"
             >
               <X size={13} />
@@ -78,13 +78,13 @@ export const TagInput: React.FC<TagInputProps> = ({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={tags.length === 0 ? placeholder : 'Adicionar outro...'}
-            className="w-full bg-transparent text-sm text-slate-200 placeholder-slate-500 focus:outline-none px-1 py-0.5"
+            className="w-full bg-transparent text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none px-1 py-0.5"
           />
           {inputValue.trim() && (
             <button
               type="button"
               onClick={handleAddTag}
-              className="p-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs flex items-center shrink-0 transition-colors"
+              className="p-1 rounded-md bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs flex items-center shrink-0 transition-colors"
             >
               <Plus size={14} />
             </button>
@@ -92,7 +92,7 @@ export const TagInput: React.FC<TagInputProps> = ({
         </div>
       </div>
 
-      {error && <p className="text-xs text-rose-400 mt-1">{error}</p>}
+      {error && <p className="text-xs text-rose-500 dark:text-rose-400 mt-1">{error}</p>}
     </div>
   );
 };
