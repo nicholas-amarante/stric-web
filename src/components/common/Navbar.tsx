@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Bot, 
@@ -13,6 +13,12 @@ import {
 export const Navbar: React.FC = () => {
   const { user, isRecruiter, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -97,7 +103,7 @@ export const Navbar: React.FC = () => {
 
               {/* Logout button */}
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="p-2 rounded-xl bg-slate-900/80 hover:bg-rose-500/10 border border-slate-800 hover:border-rose-500/30 text-slate-400 hover:text-rose-300 transition-colors"
                 title="Sair da conta"
               >
