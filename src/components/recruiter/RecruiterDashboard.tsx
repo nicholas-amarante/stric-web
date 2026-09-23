@@ -46,7 +46,12 @@ export const RecruiterDashboard: React.FC<RecruiterDashboardProps> = ({
         }
       })
       .catch((err) => {
-        console.error('Erro ao carregar candidatos da vaga:', err);
+        if (err.response?.status === 403) {
+          alert('Você não tem permissão para gerenciar as candidaturas desta vaga');
+        } else {
+          console.error('Erro ao carregar candidatos da vaga:', err);
+        }
+        if (isMounted) setCandidaturas([]);
       })
       .finally(() => {
         if (isMounted) {

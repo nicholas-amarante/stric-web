@@ -16,24 +16,24 @@ export const CandidateRanking: React.FC<CandidateRankingProps> = ({
 
   // Ordenação decrescente obrigatória por score_aderencia
   const sortedCandidaturas = [...candidaturas].sort((a, b) => {
-    const scoreA = a.analiseIA?.scoreAderencia ?? 0;
-    const scoreB = b.analiseIA?.scoreAderencia ?? 0;
+    const scoreA = (a.analiseIA?.scoreAderencia ?? a.scoreAderencia) ?? 0;
+    const scoreB = (b.analiseIA?.scoreAderencia ?? b.scoreAderencia) ?? 0;
     return scoreB - scoreA;
   });
 
   // Métricas do ranking
   const total = sortedCandidaturas.length;
-  const highCount = sortedCandidaturas.filter(c => (c.analiseIA?.scoreAderencia ?? 0) >= 70).length;
+  const highCount = sortedCandidaturas.filter(c => ((c.analiseIA?.scoreAderencia ?? c.scoreAderencia) ?? 0) >= 70).length;
   const mediumCount = sortedCandidaturas.filter(c => {
-    const s = c.analiseIA?.scoreAderencia ?? 0;
+    const s = (c.analiseIA?.scoreAderencia ?? c.scoreAderencia) ?? 0;
     return s >= 50 && s < 70;
   }).length;
-  const lowCount = sortedCandidaturas.filter(c => (c.analiseIA?.scoreAderencia ?? 0) < 50).length;
+  const lowCount = sortedCandidaturas.filter(c => ((c.analiseIA?.scoreAderencia ?? c.scoreAderencia) ?? 0) < 50).length;
   const interviewCount = sortedCandidaturas.filter(c => c.status === 'SELECIONADO_ENTREVISTA').length;
 
   // Filtragem conforme seleção do recrutador
   const filteredCandidaturas = sortedCandidaturas.filter(c => {
-    const score = c.analiseIA?.scoreAderencia ?? 0;
+    const score = (c.analiseIA?.scoreAderencia ?? c.scoreAderencia) ?? 0;
     if (filterScore === 'HIGH') return score >= 70;
     if (filterScore === 'MEDIUM') return score >= 50 && score < 70;
     if (filterScore === 'LOW') return score < 50;

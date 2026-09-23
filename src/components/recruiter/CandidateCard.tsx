@@ -33,7 +33,7 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   const isInterviewSelected = candidatura.status === 'SELECIONADO_ENTREVISTA';
-  const score = candidatura.analiseIA?.scoreAderencia ?? 0;
+  const score = candidatura.analiseIA?.scoreAderencia ?? candidatura.scoreAderencia ?? 0;
 
   // Lógica LGPD: Se o status for SELECIONADO_ENTREVISTA, os contatos foram revelados
   const emailExibido = isInterviewSelected 
@@ -118,37 +118,37 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
             Resumo Executivo da IA
           </div>
           <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-            {candidatura.analiseIA?.resumoExecutivo || 'Análise da IA pendente ou em processamento...'}
+            {candidatura.analiseIA?.resumoExecutivo || candidatura.resumoExecutivo || 'Análise da IA pendente ou em processamento...'}
           </p>
         </div>
 
         {/* Dados Extraídos (Formação e Anos de Experiência) */}
-        {candidatura.analiseIA?.dadosExtraidos && (
+        {(candidatura.analiseIA?.dadosExtraidos || candidatura.nivelFormacao || (candidatura.tempoExperienciaAnos !== undefined && candidatura.tempoExperienciaAnos !== null)) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/60 text-slate-700 dark:text-slate-300">
               <GraduationCap size={15} className="text-brand-600 dark:text-brand-400 shrink-0" />
               <span className="truncate">
-                {candidatura.analiseIA.dadosExtraidos.nivelFormacao || 'Formação não identificada'}
+                {candidatura.analiseIA?.dadosExtraidos?.nivelFormacao || candidatura.nivelFormacao || 'Formação não identificada'}
               </span>
             </div>
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/60 text-slate-700 dark:text-slate-300">
               <Briefcase size={15} className="text-brand-600 dark:text-brand-400 shrink-0" />
               <span>
-                {candidatura.analiseIA.dadosExtraidos.tempoExperienciaAnos} anos de experiência detectados
+                {candidatura.analiseIA?.dadosExtraidos?.tempoExperienciaAnos ?? candidatura.tempoExperienciaAnos} anos de experiência detectados
               </span>
             </div>
           </div>
         )}
 
         {/* Requisitos Atendidos (Badges Verdes) */}
-        {candidatura.analiseIA?.requisitosAtendidos && candidatura.analiseIA.requisitosAtendidos.length > 0 && (
+        {(candidatura.analiseIA?.requisitosAtendidos || candidatura.requisitosAtendidos)?.length > 0 && (
           <div>
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1.5">
               <CheckCircle2 size={13} />
               Requisitos Atendidos
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {candidatura.analiseIA.requisitosAtendidos.map((req, i) => (
+              {(candidatura.analiseIA?.requisitosAtendidos || candidatura.requisitosAtendidos || []).map((req, i) => (
                 <span
                   key={i}
                   className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20"
@@ -161,14 +161,14 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
         )}
 
         {/* Pontos de Atenção (Badges Âmbar/Vermelho) */}
-        {candidatura.analiseIA?.pontosAtencao && candidatura.analiseIA.pontosAtencao.length > 0 && (
+        {(candidatura.analiseIA?.pontosAtencao || candidatura.pontosAtencao)?.length > 0 && (
           <div>
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1.5">
               <AlertCircle size={13} />
               Pontos de Atenção / Lacunas Identificadas
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {candidatura.analiseIA.pontosAtencao.map((ponto, i) => (
+              {(candidatura.analiseIA?.pontosAtencao || candidatura.pontosAtencao || []).map((ponto, i) => (
                 <span
                   key={i}
                   className="px-2.5 py-0.5 rounded-md text-xs font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20"

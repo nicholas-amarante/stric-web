@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { vagaService } from '../../src/services/vagaService';
+import { useDebounce } from '../hooks/useDebounce';
 import { JobList } from '../components/candidate/JobList';
 import { Sparkles, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
 
 export const CandidateHomePage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [experienceFilter, setExperienceFilter] = useState<number | 'ALL'>('ALL');
+  
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   const { data: vagas = [], isLoading } = useQuery({
-    queryKey: ['vagas-abertas'],
-    queryFn: () => vagaService.listarVagasAbertas(),
+    queryKey: ['vagas-abertas', debouncedSearchTerm, experienceFilter],
+    queryFn: () => vagaService.listarVagasAbertas(debouncedSearchTerm, experienceFilter),
   });
 
   return (
@@ -64,7 +70,14 @@ export const CandidateHomePage: React.FC = () => {
           </span>
         </div>
 
-        <JobList vagas={vagas} isLoading={isLoading} />
+        <JobList 
+          vagas={vagas} 
+          isLoading={isLoading} 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          experienceFilter={experienceFilter}
+          setExperienceFilter={setExperienceFilter}
+        />
       </section>
     </div>
   );

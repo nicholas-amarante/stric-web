@@ -6,7 +6,7 @@ import { RecruiterDashboard } from '../components/recruiter/RecruiterDashboard';
 export const RecruiterDashboardPage: React.FC = () => {
   const { data: vagas = [], isLoading } = useQuery({
     queryKey: ['vagas-recrutador'],
-    queryFn: () => vagaService.listarVagasAbertas(),
+    queryFn: () => vagaService.listarMinhasVagas(),
   });
 
   if (isLoading) {

@@ -7,27 +7,24 @@ import { Search, Filter, Briefcase, CheckCircle2 } from 'lucide-react';
 interface JobListProps {
   vagas: Vaga[];
   isLoading: boolean;
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  experienceFilter: number | 'ALL';
+  setExperienceFilter: (value: number | 'ALL') => void;
 }
 
-export const JobList: React.FC<JobListProps> = ({ vagas, isLoading }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [experienceFilter, setExperienceFilter] = useState<number | 'ALL'>('ALL');
+export const JobList: React.FC<JobListProps> = ({ 
+  vagas, 
+  isLoading, 
+  searchTerm, 
+  setSearchTerm, 
+  experienceFilter, 
+  setExperienceFilter 
+}) => {
   const [selectedJobForModal, setSelectedJobForModal] = useState<Vaga | null>(null);
   const [successNotification, setSuccessNotification] = useState<string | null>(null);
 
-  // Filtragem de vagas
-  const filteredVagas = vagas.filter((vaga) => {
-    const matchesSearch = 
-      vaga.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vaga.descricao.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vaga.requisitosObrigatorios.some(r => r.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      vaga.requisitosDesejaveis?.some(r => r.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    const matchesExp = 
-      experienceFilter === 'ALL' || vaga.tempoExperienciaAnos <= experienceFilter;
-
-    return matchesSearch && matchesExp;
-  });
+  
 
   const handleApplicationSuccess = (candidatura: Candidatura) => {
     setSuccessNotification(`Candidatura para "${selectedJobForModal?.titulo}" enviada com sucesso! Score IA: ${candidatura.analiseIA?.scoreAderencia || 0}%.`);
@@ -92,9 +89,9 @@ export const JobList: React.FC<JobListProps> = ({ vagas, isLoading }) => {
             </div>
           ))}
         </div>
-      ) : filteredVagas.length > 0 ? (
+      ) : vagas.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVagas.map((vaga) => (
+          {vagas.map((vaga) => (
             <JobCard
               key={vaga.id}
               vaga={vaga}

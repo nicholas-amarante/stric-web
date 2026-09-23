@@ -30,7 +30,7 @@ export const candidaturaService = {
 
     try {
       // Backend responde com HTTP 202 Accepted
-      const response = await api.post<UploadCandidaturaResponse>('/candidaturas', formData, {
+      const response = await api.post<UploadCandidaturaResponse>(`/candidaturas/vagas/${vagaId}/submeter`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -136,7 +136,7 @@ export const candidaturaService = {
    */
   async baixarCurriculo(id: string, nomeArquivo?: string): Promise<void> {
     try {
-      const response = await api.get(`/candidaturas/${id}/curriculo`, {
+      const response = await api.get(`/candidaturas/${id}/download-pdf`, {
         responseType: 'blob',
       });
       const blob = new Blob([response.data], { type: 'application/pdf' });

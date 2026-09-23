@@ -63,8 +63,15 @@ export interface Candidatura {
   telefoneCompleto?: string;
   status: StatusCandidatura;
   dataSubmissao: string;
-  analiseIA?: AnaliseIA;
+    analiseIA?: AnaliseIA;
   arquivoNomeOriginal?: string;
+  // DTO Flattened properties (when coming from Recruiter list endpoint)
+  scoreAderencia?: number;
+  resumoExecutivo?: string;
+  requisitosAtendidos?: string[];
+  pontosAtencao?: string[];
+  tempoExperienciaAnos?: number;
+  nivelFormacao?: string;
 }
 
 export interface UploadCandidaturaResponse {

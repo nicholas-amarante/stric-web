@@ -6,9 +6,26 @@ import { MOCK_VAGAS, MOCK_CANDIDATURAS } from './mockData';
 let localVagas = [...MOCK_VAGAS];
 
 export const vagaService = {
-  async listarVagasAbertas(): Promise<Vaga[]> {
+  async listarMinhasVagas(): Promise<Vaga[]> {
     try {
-      const response = await api.get<Vaga[]>('/vagas');
+      const response = await api.get<Vaga[]>('/vagas/minhas');
+      if (response.data && response.data.length > 0) {
+        return response.data;
+      }
+      return localVagas;
+    } catch (error) {
+      console.warn('API backend indisponível (minhas vagas).', error);
+      return localVagas;
+    }
+  },
+
+  async listarVagasAbertas(search?: string, maxExperience?: number | 'ALL'): Promise<Vaga[]> {
+    try {
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (maxExperience !== undefined && maxExperience !== 'ALL') params.append('maxExperience', maxExperience.toString());
+      
+      const response = await api.get<Vaga[]>('/vagas', { params });
       if (response.data && response.data.length > 0) {
         return response.data;
       }
@@ -51,12 +68,15 @@ export const vagaService = {
 
   async listarCandidaturasPorVaga(vagaId: string): Promise<Candidatura[]> {
     try {
-      const response = await api.get<Candidatura[]>(`/vagas/${vagaId}/candidaturas`);
+      const response = await api.get<Candidatura[]>(`/candidaturas/vagas/${vagaId}`);
       if (response.data && response.data.length > 0) {
         return response.data;
       }
       return MOCK_CANDIDATURAS.filter(c => c.vagaId === vagaId);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        throw error;
+      }
       console.warn('API backend indisponível. Carregando candidaturas de demonstração.', error);
       return MOCK_CANDIDATURAS.filter(c => c.vagaId === vagaId);
     }
