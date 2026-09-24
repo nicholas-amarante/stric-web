@@ -9,10 +9,7 @@ export const vagaService = {
   async listarMinhasVagas(): Promise<Vaga[]> {
     try {
       const response = await api.get<Vaga[]>('/vagas/minhas');
-      if (response.data && response.data.length > 0) {
-        return response.data;
-      }
-      return localVagas;
+      return response.data;
     } catch (error) {
       console.warn('API backend indisponível (minhas vagas).', error);
       return localVagas;
@@ -26,10 +23,7 @@ export const vagaService = {
       if (maxExperience !== undefined && maxExperience !== 'ALL') params.append('maxExperience', maxExperience.toString());
       
       const response = await api.get<Vaga[]>('/vagas', { params });
-      if (response.data && response.data.length > 0) {
-        return response.data;
-      }
-      return localVagas;
+      return response.data;
     } catch (error) {
       console.warn('API backend em localhost:8080 offline ou sem dados. Utilizando dados de demonstração.', error);
       return localVagas;
@@ -69,10 +63,7 @@ export const vagaService = {
   async listarCandidaturasPorVaga(vagaId: string): Promise<Candidatura[]> {
     try {
       const response = await api.get<Candidatura[]>(`/candidaturas/vagas/${vagaId}`);
-      if (response.data && response.data.length > 0) {
-        return response.data;
-      }
-      return MOCK_CANDIDATURAS.filter(c => c.vagaId === vagaId);
+      return response.data;
     } catch (error: any) {
       if (error.response?.status === 403) {
         throw error;
