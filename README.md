@@ -1,41 +1,63 @@
-﻿# STRIC Web (Frontend SPA)
+# STRIC Web (Frontend SPA)
 
-Interface web moderna do **Sistema de Triagem e Resumo Inteligente de Currículos (STRIC)**, desenvolvida para conectar candidatos e recrutadores com triagem automatizada orientada a Inteligência Artificial.
+Interface web moderna do **Sistema de Triagem e Resumo Inteligente de Currículos (STRIC)**, desenvolvida para conectar candidatos e recrutadores com triagem automatizada orientada a Inteligência Artificial (Google Gemini).
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
 - **React 18** com **Vite** e **TypeScript**
-- **Tailwind CSS** (design system customizado, dark mode, glassmorphism e microinterações)
-- **TanStack Query (React Query)** (gerenciamento de estado assíncrono e polling a cada 3s)
-- **React Hook Form** + **Zod** (validação de formulários e schemas)
-- **Axios** (cliente HTTP com interceptors para injeção de JWT e tratamento de erros)
-- **Lucide React** (iconografia moderna)
+- **Tailwind CSS** com **Design System Corporativo Clean/Minimalista** (estética sóbria, cards estruturados com bordas sutis, tipografia com alto contraste e foco em usabilidade SaaS executiva)
+- **TanStack Query (React Query)** (gerenciamento de estado de requisições, polling automático resiliente e isolamento total de sessão com `queryClient.clear()` no logout)
+- **React Hook Form** + **Zod** (validação estrita de formulários e schemas de dados)
+- **Axios** (cliente HTTP com interceptors para injeção de token JWT e tratamento unificado de erros de resposta)
+- **Lucide React** (iconografia moderna e semântica)
 
 ---
 
 ## 📋 Funcionalidades Principais
 
-### 1. Autenticação & Perfis (RBAC)
-- Login e cadastro com seleção de papéis: `Candidato` ou `Recrutador`.
-- Gerenciamento de sessão com tokens JWT via LocalStorage e interceptors Axios.
-- Rotas protegidas por papéis (Private Routes).
-- Edição de perfil com validação de senha atual e atualização em tempo real no banco de dados.
+### 1. Autenticação, Perfis & Segurança (RBAC)
+- **Controle de Acesso Baseado em Papéis**: Login e cadastro com perfis diferenciados: `ROLE_CANDIDATE` e `ROLE_RECRUITER`.
+- **Sessão Segura**: Armazenamento de token JWT e redirecionamento dinâmico baseado em função via `ProtectedRoute`.
+- **Isolamento de Cache no Logout**: Invocação preventiva de `queryClient.clear()` no logout, garantindo que nenhum dado sensível de vagas ou candidatos permaneça em cache na máquina ao trocar de usuário.
+- **Página de Perfil Corporativa (`/perfil`)**:
+  - Layout SaaS estruturado em 2 colunas com navegação rápida lateral e cards bem delimitados.
+  - **Segurança de E-mail**: Exigência obrigatória de confirmação da senha atual para autorizar alterações no endereço de e-mail.
+  - Alteração de senha com confirmação e validação client-side.
+  - Feedback visual claro com rolagem automática suave (`window.scrollTo`) para mensagens de sucesso ou alertas de validação da API.
 
-### 2. Área do Candidato
-- Listagem de vagas abertas com filtros de busca por cargo, tecnologia e anos de experiência.
-- Modal de candidatura com validação client-side estrita (apenas `.pdf` até 5MB).
-- Envio via `multipart/form-data`.
-- Feedback com **polling automático a cada 3 segundos** (HTTP 202 `EM_ANALISE` -> `CONCLUIDO`).
-- Visualização imediata do score de compatibilidade, resumo executivo da IA e requisitos atendidos.
+### 2. Área do Candidato (`/vagas`)
+- **Busca Server-Side com Debounce**: Barra de pesquisa reativa utilizando o hook customizado `useDebounce`, conectada diretamente aos parâmetros de consulta do backend (`termoBusca` e `experienciaMaxima`).
+- **Cards de Vagas Clean**: Exibição refinada com status visual (`ABERTA`, `PAUSADA`, `ENCERRADA`), requisitos obrigatórios/desejáveis e tempo mínimo de experiência.
+- **Submissão Segura de Currículo**: Modal com validação rigorosa no frontend (somente arquivos `.pdf` de até 5MB) enviados via `multipart/form-data`.
+- **Polling Resiliente de Análise**: Consulta automática a cada 3 segundos via React Query durante o estado `EM_ANALISE`, com parada imediata após conclusão (`CONCLUIDO`) ou rejeição.
+- **Feedback Transparente de Triagem**: Visualização imediata do score de compatibilidade técnica (0 a 100%), resumo executivo gerado pela IA, requisitos atendidos e pontos de atenção detectados.
 
-### 3. Painel do Recrutador
-- Cadastro de novas vagas com chips interativos de requisitos obrigatórios e desejáveis.
-- Ranking de candidatos ordenado pelo `score_aderencia` (badges coloridos: ≥70% verde, 50-69% amarelo, <50% vermelho).
-- Card detalhado do candidato com resumo executivo da IA, formação e experiência identificadas.
-- **Conformidade com a LGPD**: mascaramento padrão de contatos (`(11) 9****-**34` e `j***@***.com`) com botão *"Selecionar para Entrevista"* para revelação e auditoria.
-- Download do arquivo original do currículo em PDF.
+### 3. Painel do Recrutador (`/recrutador`)
+- **Gestão de Vagas**: Alternância facilitada entre todas as vagas e a listagem exclusiva **"Minhas Vagas"** (`GET /api/vagas/minhas`), evitando poluição visual entre diferentes recrutadores da empresa.
+- **Cadastro e Edição de Vagas**: Modal de criação com chips interativos para inclusão de requisitos técnicos obrigatórios e desejáveis.
+- **Controle de Status da Vaga**: Acompanhamento do ciclo de vida da vaga (`ABERTA`, `PAUSADA`, `ENCERRADA`).
+- **Ranking Automatizado de Candidatos**:
+  - Ordenação decrescente por `score_aderencia` fornecido pela IA.
+  - Badges semânticos de pontuação: **≥70% Verde** (alta compatibilidade), **50-69% Amarelo** (compatibilidade moderada), **<50% Vermelho** (baixa compatibilidade).
+- **Conformidade Estrita com a LGPD**:
+  - Mascaramento por padrão de todos os contatos do candidato (`(11) 9****-**34` e `j***@***.com`).
+  - Ação deliberada **"Selecionar para Entrevista"**, exigindo justificativa formal que registra auditoria no backend e revela os contatos reais.
+- **Download do PDF Original**: Acesso direto ao currículo submetido pelo candidato em formato binário seguro.
+
+---
+
+## 🔑 Credenciais de Demonstração (DatabaseSeeder)
+
+O backend possui uma carga inicial de dados simulados prontos para teste imediato com a senha padrão **`senha123`**:
+
+| Perfil | E-mail | Senha | Descrição |
+|---|---|---|---|
+| **Recrutador** | `ana.souza@techrecruiting.com.br` | `senha123` | Possui vagas cadastradas com ranking de candidatos triados por IA |
+| **Recrutador** | `carlos.lima@rhagil.com.br` | `senha123` | Outro recrutador para validar isolamento de "Minhas Vagas" |
+| **Candidato** | `lucas.santos@email.com` | `senha123` | Candidato com histórico e candidaturas cadastradas |
+| **Candidato** | `beatriz.costa@email.com` | `senha123` | Candidata para testes de novas submissões |
 
 ---
 
@@ -46,7 +68,7 @@ Interface web moderna do **Sistema de Triagem e Resumo Inteligente de Currículo
    npm install
    ```
 
-2. **Executar em ambiente de desenvolvimento**:
+2. **Executar em modo de desenvolvimento**:
    ```bash
    npm run dev
    ```
@@ -57,8 +79,13 @@ Interface web moderna do **Sistema de Triagem e Resumo Inteligente de Currículo
    npm run build
    ```
 
+4. **Pré-visualizar o build**:
+   ```bash
+   npm run preview
+   ```
+
 ---
 
 ## 🔗 Integração com o Backend
 
-A aplicação consome a API REST Spring Boot em `http://localhost:8080/api` (configurada via proxy no `vite.config.ts` e `api.ts`).
+A aplicação consome a API REST Spring Boot em `http://localhost:8080/api`. O proxy reverso de desenvolvimento está configurado no arquivo [vite.config.ts](vite.config.ts) e centralizado no cliente [src/services/api.ts](src/services/api.ts).
