@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Usuario, Role } from '../types';
 import { authService } from '../services/authService';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface AuthContextType {
   user: Usuario | null;
@@ -19,6 +20,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const queryClient = useQueryClient();
   const [user, setUser] = useState<Usuario | null>(() => {
     const savedUser = localStorage.getItem('@stric:user');
     if (savedUser) {
@@ -90,6 +92,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
+      queryClient.clear();
     setUser(null);
     setToken(null);
     localStorage.removeItem('@stric:user');

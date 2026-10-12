@@ -141,7 +141,7 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
         )}
 
         {/* Requisitos Atendidos (Badges Verdes) */}
-        {(candidatura.analiseIA?.requisitosAtendidos || candidatura.requisitosAtendidos)?.length > 0 && (
+        {((candidatura.analiseIA?.requisitosAtendidos || candidatura.requisitosAtendidos)?.length ?? 0) > 0 && (
           <div>
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1.5">
               <CheckCircle2 size={13} />
@@ -161,7 +161,7 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
         )}
 
         {/* Pontos de Atenção (Badges Âmbar/Vermelho) */}
-        {(candidatura.analiseIA?.pontosAtencao || candidatura.pontosAtencao)?.length > 0 && (
+        {((candidatura.analiseIA?.pontosAtencao || candidatura.pontosAtencao)?.length ?? 0) > 0 && (
           <div>
             <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1.5">
               <AlertCircle size={13} />

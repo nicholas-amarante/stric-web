@@ -10,10 +10,10 @@ import {
   Lock, 
   Mail, 
   User, 
-  ArrowRight, 
   ShieldCheck, 
   UserCircle, 
-  LayoutDashboard
+  LayoutDashboard,
+  CheckCircle2
 } from 'lucide-react';
 
 const loginSchema = z.object({
@@ -38,32 +38,22 @@ export const LoginPage: React.FC = () => {
   const { login, register: registerUser, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Login Form
   const {
     register: loginRegister,
     handleSubmit: handleLoginSubmit,
     formState: { errors: loginErrors }
   } = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      senha: '',
-    }
+    defaultValues: { email: '', senha: '' }
   });
 
-  // Register Form
   const {
     register: regRegister,
     handleSubmit: handleRegisterSubmit,
     formState: { errors: regErrors }
   } = useForm<RegisterInputs>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      nome: '',
-      email: '',
-      senha: '',
-      role: 'ROLE_CANDIDATE',
-    }
+    defaultValues: { nome: '', email: '', senha: '', role: 'ROLE_CANDIDATE' }
   });
 
   const onLogin = async (data: LoginInputs) => {
@@ -71,8 +61,8 @@ export const LoginPage: React.FC = () => {
     try {
       const loggedUser = await login(data.email, data.senha);
       navigate(loggedUser.role === 'ROLE_RECRUITER' ? '/recrutador' : '/vagas');
-    } catch (err: unknown) {
-      setAuthError(err instanceof Error ? err.message : 'Falha na autenticação.');
+    } catch (error: any) {
+      setAuthError(error.response?.data?.message || error.message || 'E-mail ou senha incorretos.');
     }
   };
 
@@ -81,227 +71,215 @@ export const LoginPage: React.FC = () => {
     try {
       const registeredUser = await registerUser(data.nome, data.email, data.senha, selectedRole);
       navigate(registeredUser.role === 'ROLE_RECRUITER' ? '/recrutador' : '/vagas');
-    } catch (err: unknown) {
-      setAuthError(err instanceof Error ? err.message : 'Falha ao realizar cadastro.');
+    } catch (error: any) {
+      setAuthError(error.response?.data?.message || error.message || 'Erro ao realizar cadastro.');
     }
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 shadow-glow mb-2">
-            <Bot size={32} className="text-white" />
+    <div className="min-h-screen flex bg-white text-slate-900">
+      
+      {/* Lado Esquerdo: Formulário */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 lg:px-24 py-12">
+        <div className="max-w-md w-full mx-auto space-y-8">
+          
+          {/* Cabeçalho */}
+          <div className="text-center lg:text-left">
+            <div className="inline-flex items-center justify-center p-3 rounded-xl bg-blue-600 text-white mb-6">
+              <Bot size={28} />
+            </div>
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+              {isRegistering ? 'Crie sua conta' : 'Bem-vindo de volta'}
+            </h1>
+            <p className="text-slate-500 mt-2">
+              {isRegistering 
+                ? 'Junte-se a milhares de profissionais e empresas.' 
+                : 'Faça login para acessar sua conta na plataforma.'}
+            </p>
           </div>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight">
-            STRIC - Triagem com IA
-          </h1>
-          <p className="text-xs text-slate-400">
-            {isRegistering 
-              ? 'Crie sua conta para acessar vagas ou gerenciar processos seletivos'
-              : 'Entre na sua conta para acompanhar vagas e candidaturas'}
-          </p>
-        </div>
 
-        {/* Card Principal */}
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border-slate-800 space-y-6 shadow-2xl">
-          {/* Abas: Entrar vs Cadastrar */}
-          <div className="grid grid-cols-2 p-1 bg-slate-950/80 rounded-xl border border-slate-800">
+          {/* Toggle Login/Cadastro */}
+          <div className="flex bg-slate-100 p-1 rounded-lg">
             <button
-              type="button"
-              onClick={() => { setIsRegistering(false); setAuthError(null); }}
-              className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                !isRegistering 
-                  ? 'bg-brand-600 text-white shadow-sm' 
-                  : 'text-slate-400 hover:text-white'
+              onClick={() => setIsRegistering(false)}
+              className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${
+                !isRegistering ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
               }`}
             >
               Entrar
             </button>
             <button
-              type="button"
-              onClick={() => { setIsRegistering(true); setAuthError(null); }}
-              className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                isRegistering 
-                  ? 'bg-brand-600 text-white shadow-sm' 
-                  : 'text-slate-400 hover:text-white'
+              onClick={() => setIsRegistering(true)}
+              className={`flex-1 py-2 text-sm font-semibold rounded-md transition-all ${
+                isRegistering ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
               }`}
             >
-              Criar Conta
+              Cadastrar
             </button>
           </div>
 
           {authError && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+            <div className="p-3 rounded-md bg-red-50 border border-red-200 text-red-600 text-sm">
               {authError}
             </div>
           )}
 
-          {/* FORMULÁRIO DE LOGIN */}
+          {/* Formulário de Login */}
           {!isRegistering ? (
-            <form onSubmit={handleLoginSubmit(onLogin)} className="space-y-4">
+            <form onSubmit={handleLoginSubmit(onLogin)} className="space-y-5">
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  E-mail
-                </label>
+                <label className="block text-sm font-medium text-slate-700">Endereço de E-mail</label>
                 <div className="relative">
-                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="email"
                     {...loginRegister('email')}
                     placeholder="seu.email@exemplo.com"
-                    className="glass-input pl-10 w-full text-sm"
+                    className="glass-input w-full pl-10"
                   />
                 </div>
-                {loginErrors.email && (
-                  <p className="text-xs text-rose-400">{loginErrors.email.message}</p>
-                )}
+                {loginErrors.email && <p className="text-xs text-red-500">{loginErrors.email.message}</p>}
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Senha
-                </label>
+                <div className="flex justify-between items-center">
+                  <label className="block text-sm font-medium text-slate-700">Senha</label>
+                  <a href="#" className="text-xs font-semibold text-blue-600 hover:text-blue-700">Esqueceu a senha?</a>
+                </div>
                 <div className="relative">
-                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="password"
                     {...loginRegister('senha')}
                     placeholder="••••••••"
-                    className="glass-input pl-10 w-full text-sm"
+                    className="glass-input w-full pl-10"
                   />
                 </div>
-                {loginErrors.senha && (
-                  <p className="text-xs text-rose-400">{loginErrors.senha.message}</p>
-                )}
+                {loginErrors.senha && <p className="text-xs text-red-500">{loginErrors.senha.message}</p>}
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="btn-primary w-full text-sm py-3 mt-2"
-              >
-                <span>Acessar Plataforma</span>
-                <ArrowRight size={16} />
+              <button type="submit" disabled={isLoading} className="btn-primary w-full py-2.5 mt-2">
+                Entrar
               </button>
             </form>
           ) : (
-            /* FORMULÁRIO DE CADASTRO */
-            <form onSubmit={handleRegisterSubmit(onRegister)} className="space-y-4">
-              {/* Seleção de Perfil: Candidato ou Recrutador */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Qual é o seu perfil? *
-                </label>
-                <div className="grid grid-cols-2 gap-2">
+            /* Formulário de Cadastro */
+            <form onSubmit={handleRegisterSubmit(onRegister)} className="space-y-5">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-700">Qual é o seu perfil?</label>
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setSelectedRole('ROLE_CANDIDATE')}
-                    className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all ${
+                    className={`p-4 rounded-xl border text-left transition-all ${
                       selectedRole === 'ROLE_CANDIDATE'
-                        ? 'bg-brand-500/15 border-brand-500/60 shadow-glow text-white'
-                        : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                        ? 'bg-blue-50 border-blue-600 text-blue-700 ring-1 ring-blue-600'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-blue-400'
                     }`}
                   >
-                    <UserCircle size={20} className={selectedRole === 'ROLE_CANDIDATE' ? 'text-brand-400' : 'text-slate-500'} />
-                    <div className="mt-2">
-                      <span className="text-xs font-bold block">Candidato</span>
-                      <span className="text-[10px] text-slate-400">Buscar vagas & enviar CV</span>
-                    </div>
+                    <UserCircle size={24} className={selectedRole === 'ROLE_CANDIDATE' ? 'text-blue-600' : 'text-slate-400'} />
+                    <span className="block font-semibold mt-2">Candidato</span>
+                    <span className="text-xs mt-1 block opacity-80">Buscar vagas</span>
                   </button>
-
                   <button
                     type="button"
                     onClick={() => setSelectedRole('ROLE_RECRUITER')}
-                    className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all ${
+                    className={`p-4 rounded-xl border text-left transition-all ${
                       selectedRole === 'ROLE_RECRUITER'
-                        ? 'bg-indigo-500/15 border-indigo-500/60 shadow-glow text-white'
-                        : 'bg-slate-950/40 border-slate-800 text-slate-400 hover:text-slate-200'
+                        ? 'bg-blue-50 border-blue-600 text-blue-700 ring-1 ring-blue-600'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-blue-400'
                     }`}
                   >
-                    <LayoutDashboard size={20} className={selectedRole === 'ROLE_RECRUITER' ? 'text-indigo-400' : 'text-slate-500'} />
-                    <div className="mt-2">
-                      <span className="text-xs font-bold block">Recrutador</span>
-                      <span className="text-[10px] text-slate-400">Criar vagas & triagem</span>
-                    </div>
+                    <LayoutDashboard size={24} className={selectedRole === 'ROLE_RECRUITER' ? 'text-blue-600' : 'text-slate-400'} />
+                    <span className="block font-semibold mt-2">Recrutador</span>
+                    <span className="text-xs mt-1 block opacity-80">Publicar vagas</span>
                   </button>
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Nome Completo
-                </label>
+                <label className="block text-sm font-medium text-slate-700">Nome Completo</label>
                 <div className="relative">
-                  <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
                     {...regRegister('nome')}
                     placeholder="Seu nome"
-                    className="glass-input pl-10 w-full text-sm"
+                    className="glass-input w-full pl-10"
                   />
                 </div>
-                {regErrors.nome && (
-                  <p className="text-xs text-rose-400">{regErrors.nome.message}</p>
-                )}
+                {regErrors.nome && <p className="text-xs text-red-500">{regErrors.nome.message}</p>}
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  E-mail
-                </label>
+                <label className="block text-sm font-medium text-slate-700">Endereço de E-mail</label>
                 <div className="relative">
-                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="email"
                     {...regRegister('email')}
                     placeholder="seu.email@exemplo.com"
-                    className="glass-input pl-10 w-full text-sm"
+                    className="glass-input w-full pl-10"
                   />
                 </div>
-                {regErrors.email && (
-                  <p className="text-xs text-rose-400">{regErrors.email.message}</p>
-                )}
+                {regErrors.email && <p className="text-xs text-red-500">{regErrors.email.message}</p>}
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Senha
-                </label>
+                <label className="block text-sm font-medium text-slate-700">Senha</label>
                 <div className="relative">
-                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="password"
                     {...regRegister('senha')}
                     placeholder="Mínimo 4 caracteres"
-                    className="glass-input pl-10 w-full text-sm"
+                    className="glass-input w-full pl-10"
                   />
                 </div>
-                {regErrors.senha && (
-                  <p className="text-xs text-rose-400">{regErrors.senha.message}</p>
-                )}
+                {regErrors.senha && <p className="text-xs text-red-500">{regErrors.senha.message}</p>}
               </div>
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="btn-primary w-full text-sm py-3 mt-2"
-              >
-                <span>Concluir Cadastro</span>
-                <ArrowRight size={16} />
+              <button type="submit" disabled={isLoading} className="btn-primary w-full py-2.5 mt-2">
+                Criar Conta
               </button>
             </form>
           )}
 
-        </div>
+          {/* Footer LGPD */}
+          <div className="flex items-center justify-center gap-2 text-xs text-slate-500 mt-8">
+            <ShieldCheck size={14} className="text-emerald-600" />
+            <span>Conformidade com a LGPD e Segurança JWT</span>
+          </div>
 
-        {/* LGPD & Segurança Badge */}
-        <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
-          <ShieldCheck size={14} className="text-emerald-400" />
-          <span>Segurança com JWT, RBAC e Conformidade com a LGPD</span>
         </div>
       </div>
+
+      {/* Lado Direito: Branding */}
+      <div className="hidden lg:flex w-1/2 bg-[#f0f5fa] items-center justify-center p-12">
+        <div className="max-w-lg space-y-8">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+              <CheckCircle2 size={32} className="text-blue-600 mb-4" />
+              <h3 className="font-bold text-slate-900">Triagem Ágil</h3>
+              <p className="text-sm text-slate-600 mt-2">Acelere suas contratações com inteligência e precisão baseada em dados reais.</p>
+            </div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mt-8">
+              <Bot size={32} className="text-blue-600 mb-4" />
+              <h3 className="font-bold text-slate-900">Análise de IA</h3>
+              <p className="text-sm text-slate-600 mt-2">Extração automática de habilidades diretamente dos currículos enviados.</p>
+            </div>
+          </div>
+          <div>
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              Simplifique o Recrutamento.
+            </h2>
+            <p className="text-slate-600 mt-4 leading-relaxed">
+              Nossa plataforma conecta talentos excepcionais a empresas inovadoras, eliminando a fricção do processo seletivo tradicional.
+            </p>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };

@@ -19,16 +19,16 @@ export const CandidateHomePage: React.FC = () => {
   return (
     <div className="space-y-10 py-6">
       {/* Hero Banner */}
-      <div className="glass-panel p-8 sm:p-12 rounded-3xl relative overflow-hidden border border-slate-200/80 dark:border-slate-800">
-        <div className="absolute right-0 top-0 w-96 h-96 bg-gradient-to-bl from-brand-600/20 via-indigo-600/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+      <div className="bg-white p-8 sm:p-12 rounded-xl border border-slate-200 shadow-sm">
+        
 
         <div className="max-w-3xl space-y-4 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/15 text-brand-600 dark:text-brand-300 border border-brand-500/30">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
             <Sparkles size={13} />
             Triagem Instantânea com Inteligência Artificial
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight leading-tight">
             Encontre a vaga ideal e receba feedback em segundos.
           </h1>
 
