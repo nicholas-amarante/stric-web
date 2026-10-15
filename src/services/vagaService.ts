@@ -47,9 +47,12 @@ export const vagaService = {
       return response.data;
     } catch (error) {
       console.warn('API backend indisponível. Cadastrando vaga localmente.', error);
+      const exp = dados.tempoMinimoExperienciaAnos ?? dados.tempoExperienciaAnos ?? 0;
       const novaVaga: Vaga = {
         id: `vaga-${Date.now()}`,
         ...dados,
+        tempoExperienciaAnos: exp,
+        tempoMinimoExperienciaAnos: exp,
         status: 'ABERTA',
         dataCriacao: new Date().toISOString(),
         recrutadorNome: 'Mariana Silveira',

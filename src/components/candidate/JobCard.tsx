@@ -18,7 +18,10 @@ export const JobCard: React.FC<JobCardProps> = ({ vaga, onApply }) => {
           </h3>
           <span className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700/60 shadow-sm">
             <Clock size={13} className="text-blue-600" />
-            Min. {vaga.tempoExperienciaAnos} {vaga.tempoExperienciaAnos === 1 ? 'ano' : 'anos'}
+            {(() => {
+              const exp = vaga.tempoMinimoExperienciaAnos ?? vaga.tempoExperienciaAnos ?? 0;
+              return <>Min. {exp} {exp === 1 ? 'ano' : 'anos'}</>;
+            })()}
           </span>
         </div>
 

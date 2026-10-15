@@ -22,7 +22,8 @@ export interface Vaga {
   descricao: string;
   requisitosObrigatorios: string[];
   requisitosDesejaveis: string[];
-  tempoExperienciaAnos: number;
+  tempoExperienciaAnos?: number;
+  tempoMinimoExperienciaAnos?: number;
   status: StatusVaga;
   dataCriacao?: string;
   recrutadorNome?: string;
@@ -86,7 +87,8 @@ export interface CreateJobInput {
   descricao: string;
   requisitosObrigatorios: string[];
   requisitosDesejaveis: string[];
-  tempoExperienciaAnos: number;
+  tempoExperienciaAnos?: number;
+  tempoMinimoExperienciaAnos?: number;
 }
 
 export interface ApiErrorResponse {

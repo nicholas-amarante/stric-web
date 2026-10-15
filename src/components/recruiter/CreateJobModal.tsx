@@ -66,6 +66,7 @@ export const CreateJobModal: React.FC<CreateJobModalProps> = ({
         titulo: data.titulo,
         descricao: data.descricao,
         tempoExperienciaAnos: data.tempoExperienciaAnos,
+        tempoMinimoExperienciaAnos: data.tempoExperienciaAnos,
         requisitosObrigatorios,
         requisitosDesejaveis,
       };

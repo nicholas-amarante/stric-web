@@ -177,7 +177,10 @@ export const RecruiterDashboard: React.FC<RecruiterDashboardProps> = ({
                       Vaga Ativa
                     </span>
                     <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                      <Clock size={11} /> {v.tempoExperienciaAnos} {v.tempoExperienciaAnos === 1 ? 'ano' : 'anos'}
+                      {(() => {
+                      const exp = v.tempoMinimoExperienciaAnos ?? v.tempoExperienciaAnos ?? 0;
+                      return <><Clock size={11} /> {exp} {exp === 1 ? 'ano' : 'anos'}</>;
+                    })()}
                     </span>
                   </div>
                   <h4 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">
@@ -210,7 +213,10 @@ export const RecruiterDashboard: React.FC<RecruiterDashboardProps> = ({
               </h2>
             </div>
             <span className="text-xs px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 self-start sm:self-auto shadow-sm">
-              Experiência mínima exigida: <strong>{selectedVaga.tempoExperienciaAnos} anos</strong>
+              {(() => {
+              const exp = selectedVaga.tempoMinimoExperienciaAnos ?? selectedVaga.tempoExperienciaAnos ?? 0;
+              return <>Experiência mínima exigida: <strong>{exp} {exp === 1 ? 'ano' : 'anos'}</strong></>;
+            })()}
             </span>
           </div>
 

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { Usuario, Role } from '../types';
 import { authService } from '../services/authService';
 import { useQueryClient } from '@tanstack/react-query';
+import { isTokenExpired } from '../utils/jwt';
 
 interface AuthContextType {
   user: Usuario | null;
@@ -20,8 +21,25 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
+
+  // 1. Inicializa o token verificando expiração síncrona
+  const [token, setToken] = useState<string | null>(() => {
+    const savedToken = localStorage.getItem('@stric:token');
+    if (!savedToken || isTokenExpired(savedToken)) {
+      localStorage.removeItem('@stric:token');
+      localStorage.removeItem('@stric:user');
+      return null;
+    }
+    return savedToken;
+  });
+
+  // 2. Inicializa o user apenas se houver token válido
   const [user, setUser] = useState<Usuario | null>(() => {
+    const savedToken = localStorage.getItem('@stric:token');
+    if (!savedToken || isTokenExpired(savedToken)) {
+      return null;
+    }
     const savedUser = localStorage.getItem('@stric:user');
     if (savedUser) {
       try {
@@ -33,14 +51,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return null;
   });
 
-  const [token, setToken] = useState<string | null>(() => {
-    return localStorage.getItem('@stric:token') || null;
-  });
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Sincroniza estado com localStorage
   useEffect(() => {
-    if (user && token) {
+    if (user && token && !isTokenExpired(token)) {
       localStorage.setItem('@stric:user', JSON.stringify(user));
       localStorage.setItem('@stric:token', token);
     } else {
@@ -48,6 +63,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       localStorage.removeItem('@stric:token');
     }
   }, [user, token]);
+
+  const logout = () => {
+    queryClient.clear();
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem('@stric:user');
+    localStorage.removeItem('@stric:token');
+  };
+
+  // 3. Camada B: Validação e sincronização com o backend em segundo plano caso haja token local
+  useEffect(() => {
+    if (!token) return;
+
+    let isMounted = true;
+
+    authService.getMe()
+      .then((freshUser) => {
+        if (isMounted && freshUser) {
+          setUser(freshUser);
+        }
+      })
+      .catch((err: any) => {
+        if (isMounted) {
+          // Se o servidor retornar 401 ou erro de autenticação, encerra a sessão
+          if (err?.response?.status === 401 || err?.message?.includes('401')) {
+            logout();
+          }
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const login = async (email: string, senha: string): Promise<Usuario> => {
     setIsLoading(true);
@@ -82,7 +131,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       setUser(updated);
       const newToken = localStorage.getItem('@stric:token');
-      if (newToken) {
+      if (newToken && !isTokenExpired(newToken)) {
         setToken(newToken);
       }
       return updated;
@@ -91,15 +140,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = () => {
-      queryClient.clear();
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('@stric:user');
-    localStorage.removeItem('@stric:token');
-  };
-
-  const isAuthenticated = !!user && !!token;
+  const isAuthenticated = !!user && !!token && !isTokenExpired(token);
   const isCandidate = user?.role === 'ROLE_CANDIDATE';
   const isRecruiter = user?.role === 'ROLE_RECRUITER';
 

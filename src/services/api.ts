@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import { isTokenExpired } from '../utils/jwt';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
@@ -14,8 +15,14 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('@stric:token');
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+      if (isTokenExpired(token)) {
+        // Se o token estiver expirado, remove e não envia header Authorization
+        localStorage.removeItem('@stric:token');
+        localStorage.removeItem('@stric:user');
+      } else if (config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -40,10 +47,10 @@ api.interceptors.response.use(
   },
   (error: AxiosError<{ message?: string; error?: string }>) => {
     if (error.response?.status === 401) {
-      // NUNCA deslogar nem redirecionar se o erro for na tela de perfil, no login ou em validação de credenciais
+      // NUNCA deslogar nem redirecionar se o erro for na autenticação do login ou na validação de senha do perfil
       const isExempt = 
         error.config?.url?.includes('/auth/login') ||
-        window.location.pathname.includes('/perfil') ||
+        error.config?.url?.includes('/auth/profile') ||
         window.location.pathname.includes('/login');
 
       if (!isExempt) {
