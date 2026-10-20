@@ -2,7 +2,8 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { 
+import {
+  FileCheck,
   Bot, 
   Briefcase, 
   LayoutDashboard, 
@@ -63,6 +64,20 @@ export const Navbar: React.FC = () => {
               <Briefcase size={16} />
               Vagas Abertas
             </Link>
+
+            {user && !isRecruiter && (
+              <Link
+                to="/minhas-candidaturas"
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive('/minhas-candidaturas')
+                    ? 'bg-brand-500/10 dark:bg-brand-500/20 text-brand-700 dark:text-brand-200 border border-brand-500/30'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-slate-100 dark:hover:bg-slate-900'
+                }`}
+              >
+                <FileCheck size={16} />
+                Minhas Candidaturas
+              </Link>
+            )}
 
             {isRecruiter && (
               <Link

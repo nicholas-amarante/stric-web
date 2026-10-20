@@ -55,8 +55,10 @@ export interface AnaliseIA {
 export interface Candidatura {
   id: string;
   vagaId: string;
+  vaga?: Vaga;
   vagaTitulo?: string;
   candidatoId: string;
+  candidato?: Usuario;
   candidatoNome?: string;
   candidatoEmailMascarado?: string;
   candidatoTelefoneMascarado?: string;
@@ -64,8 +66,11 @@ export interface Candidatura {
   telefoneCompleto?: string;
   status: StatusCandidatura;
   dataSubmissao: string;
-    analiseIA?: AnaliseIA;
+  dataAtualizacao?: string;
+  analiseIA?: AnaliseIA;
   arquivoNomeOriginal?: string;
+  nomeOriginalArquivo?: string;
+  tamanhoArquivoBytes?: number;
   // DTO Flattened properties (when coming from Recruiter list endpoint)
   scoreAderencia?: number;
   resumoExecutivo?: string;

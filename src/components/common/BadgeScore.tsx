@@ -18,15 +18,15 @@ export const BadgeScore: React.FC<BadgeScoreProps> = ({
   let classification = '';
 
   if (score >= 70) {
-    colorStyles = 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 shadow-glow-emerald';
+    colorStyles = 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30';
     Icon = Sparkles;
     classification = 'Alta Aderência';
   } else if (score >= 50) {
-    colorStyles = 'bg-amber-500/15 text-amber-300 border-amber-500/30 shadow-glow-amber';
+    colorStyles = 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-500/30';
     Icon = AlertTriangle;
     classification = 'Aderência Média';
   } else {
-    colorStyles = 'bg-rose-500/15 text-rose-300 border-rose-500/30 shadow-glow-rose';
+    colorStyles = 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-300 dark:border-rose-500/30';
     Icon = XCircle;
     classification = 'Baixa Aderência';
   }
@@ -45,13 +45,13 @@ export const BadgeScore: React.FC<BadgeScoreProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center rounded-full font-medium border backdrop-blur-sm transition-all duration-200 ${colorStyles} ${sizeClasses}`}
+      className={`inline-flex items-center rounded-full font-medium border backdrop-blur-sm transition-all duration-200 shadow-sm ${colorStyles} ${sizeClasses}`}
       title={`Score de Aderência: ${score}% - ${classification}`}
     >
       <Icon size={iconSizes} className="shrink-0" />
-      <span className="font-bold">{score}%</span>
+      <span className="font-bold">{`${score}%`}</span>
       {showLabel && size !== 'sm' && (
-        <span className="opacity-85 text-xs font-normal ml-0.5 hidden sm:inline">
+        <span className="opacity-90 text-xs font-normal ml-0.5 hidden sm:inline">
           {classification}
         </span>
       )}

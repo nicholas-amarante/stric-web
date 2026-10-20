@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Vaga, Candidatura } from '../../types';
 import { JobCard } from './JobCard';
 import { ApplicationModal } from './ApplicationModal';
-import { Search, Filter, Briefcase, CheckCircle2 } from 'lucide-react';
+import { candidaturaService } from '../../services/candidaturaService';
+import { useAuth } from '../../context/AuthContext';
+import { Search, Filter, Briefcase, CheckCircle2, AlertTriangle, LogIn } from 'lucide-react';
 
 interface JobListProps {
   vagas: Vaga[];
@@ -23,11 +27,58 @@ export const JobList: React.FC<JobListProps> = ({
 }) => {
   const [selectedJobForModal, setSelectedJobForModal] = useState<Vaga | null>(null);
   const [successNotification, setSuccessNotification] = useState<string | null>(null);
+  const [warningNotification, setWarningNotification] = useState<string | null>(null);
 
-  
+  const { user, isRecruiter } = useAuth();
+  const navigate = useNavigate();
+
+  // Busca as candidaturas já submetidas pelo candidato para identificar no card
+  const { data: minhasCandidaturas, refetch: refetchMinhas } = useQuery<Candidatura[]>({
+    queryKey: ['minhas-candidaturas'],
+    queryFn: () => candidaturaService.listarMinhasCandidaturas(),
+    enabled: !!user && !isRecruiter,
+  });
+
+  // Agrupamento: vagaId -> Lista de Candidaturas do usuário para essa vaga
+  const appliedByVaga = useMemo(() => {
+    const map = new Map<string, Candidatura[]>();
+    if (minhasCandidaturas && Array.isArray(minhasCandidaturas)) {
+      minhasCandidaturas.forEach((c) => {
+        const id = c.vaga?.id || c.vagaId;
+        if (id) {
+          const list = map.get(id) || [];
+          list.push(c);
+          map.set(id, list);
+        }
+      });
+    }
+    return map;
+  }, [minhasCandidaturas]);
+
+  const handleApplyClick = (vaga: Vaga) => {
+    // 1. Trava: Usuário deslogado
+    if (!user) {
+      setWarningNotification('Você precisa entrar na sua conta de Candidato para se candidatar a uma vaga.');
+      setTimeout(() => {
+        navigate('/login?redirect=/vagas');
+      }, 2000);
+      return;
+    }
+
+    // 2. Trava: Perfil Recrutador
+    if (isRecruiter) {
+      setWarningNotification('Usuários com perfil de Recrutador não podem submeter candidaturas a vagas de emprego.');
+      setTimeout(() => setWarningNotification(null), 5000);
+      return;
+    }
+
+    // 3. Usuário candidato autenticado
+    setSelectedJobForModal(vaga);
+  };
 
   const handleApplicationSuccess = (candidatura: Candidatura) => {
     setSuccessNotification(`Candidatura para "${selectedJobForModal?.titulo}" enviada com sucesso! Score IA: ${candidatura.analiseIA?.scoreAderencia || 0}%.`);
+    refetchMinhas();
     setTimeout(() => setSuccessNotification(null), 6000);
   };
 
@@ -38,6 +89,26 @@ export const JobList: React.FC<JobListProps> = ({
         <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 shadow-xl backdrop-blur-md flex items-center gap-3 animate-fadeIn">
           <CheckCircle2 size={20} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
           <span className="text-xs sm:text-sm font-medium">{successNotification}</span>
+        </div>
+      )}
+
+      {/* Toast Notification de Alerta/Autenticação */}
+      {warningNotification && (
+        <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-800 dark:text-amber-200 shadow-xl backdrop-blur-md flex items-center gap-3 animate-fadeIn">
+          <AlertTriangle size={20} className="text-amber-600 dark:text-amber-400 shrink-0" />
+          <div className="flex flex-col gap-1">
+            <span className="text-xs sm:text-sm font-medium">{warningNotification}</span>
+            {!user && (
+              <button
+                type="button"
+                onClick={() => navigate('/login?redirect=/vagas')}
+                className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                <LogIn size={12} />
+                <span>Ir para a tela de Login agora &rarr;</span>
+              </button>
+            )}
+          </div>
         </div>
       )}
 
@@ -95,7 +166,8 @@ export const JobList: React.FC<JobListProps> = ({
             <JobCard
               key={vaga.id}
               vaga={vaga}
-              onApply={(v) => setSelectedJobForModal(v)}
+              appliedApplications={appliedByVaga.get(vaga.id) || []}
+              onApply={handleApplyClick}
             />
           ))}
         </div>
@@ -117,6 +189,7 @@ export const JobList: React.FC<JobListProps> = ({
       <ApplicationModal
         vaga={selectedJobForModal}
         isOpen={!!selectedJobForModal}
+        hasPreviousApplication={(appliedByVaga.get(selectedJobForModal?.id || '') || []).length > 0}
         onClose={() => setSelectedJobForModal(null)}
         onSuccess={handleApplicationSuccess}
       />

@@ -19,6 +19,18 @@ import {
   Loader2
 } from 'lucide-react';
 
+const formatDateWithTime = (dateString?: string) => {
+  if (!dateString) return 'Data não informada';
+  try {
+    const d = new Date(dateString);
+    const datePart = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timePart = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return `${datePart} às ${timePart}`;
+  } catch {
+    return dateString;
+  }
+};
+
 interface CandidateCardProps {
   candidatura: Candidatura;
   onStatusUpdated?: (candidaturaAtualizada: Candidatura) => void;
@@ -98,7 +110,7 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               <Calendar size={12} />
-              <span>Inscrito em: {new Date(candidatura.dataSubmissao).toLocaleDateString('pt-BR')}</span>
+              <span>Inscrito em: <strong className="font-semibold text-slate-700 dark:text-slate-300">{formatDateWithTime(candidatura.dataSubmissao)}</strong></span>
             </div>
           </div>
         </div>

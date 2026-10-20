@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage';
 import { CandidateHomePage } from './pages/CandidateHomePage';
 import { RecruiterDashboardPage } from './pages/RecruiterDashboardPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { MyApplicationsPage } from './pages/MyApplicationsPage';
 import { Bot, ShieldCheck, Heart } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -22,6 +23,16 @@ export const App: React.FC = () => {
             <Route path="/" element={<CandidateHomePage />} />
             <Route path="/vagas" element={<CandidateHomePage />} />
             <Route path="/login" element={<LoginPage />} />
+
+            {/* Rota Protegida: Minhas Candidaturas (Candidato) */}
+            <Route
+              path="/minhas-candidaturas"
+              element={
+                <ProtectedRoute allowedRoles={['ROLE_CANDIDATE']}>
+                  <MyApplicationsPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Rota Protegida: Informações Pessoais / Perfil */}
             <Route
