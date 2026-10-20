@@ -88,4 +88,13 @@ O backend possui uma carga inicial de dados simulados prontos para teste imediat
 
 ## 🔗 Integração com o Backend
 
-A aplicação consome a API REST Spring Boot em `http://localhost:8080/api`. O proxy reverso de desenvolvimento está configurado no arquivo [vite.config.ts](vite.config.ts) e centralizado no cliente [src/services/api.ts](src/services/api.ts).
+A aplicação consome a API REST Spring Boot hospedada no Render em `https://stric-api.onrender.com/api` (ou localmente via variável de ambiente).
+
+### Variáveis de Ambiente
+A URL base da API é configurada através da variável:
+```env
+VITE_API_BASE_URL=https://stric-api.onrender.com/api
+```
+
+- Para deploy na **Vercel**, certifique-se de definir a variável de ambiente `VITE_API_BASE_URL` nas configurações do projeto (`Project Settings -> Environment Variables`) caso deseje apontar para outro ambiente, ou ela utilizará o fallback padrão `https://stric-api.onrender.com/api`.
+- O cliente HTTP centralizado está configurado em [src/services/api.ts](src/services/api.ts) e o proxy de desenvolvimento em [vite.config.ts](vite.config.ts).
